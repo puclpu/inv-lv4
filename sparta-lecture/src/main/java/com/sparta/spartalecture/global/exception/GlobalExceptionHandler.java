@@ -30,6 +30,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getResponse(errorMessage.toString(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<Map<String, String>> handleCustomException(CustomException e) {
+        return new ResponseEntity<>(getResponse(e.getMessage(), e.getStatus()), e.getStatus());
+    }
+
     private Map<String, String> getResponse(String errorMessage, HttpStatus status) {
         Map<String, String> response = new HashMap<>();
         response.put("error type", status.getReasonPhrase());
