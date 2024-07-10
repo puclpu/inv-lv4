@@ -3,6 +3,7 @@ package com.sparta.spartalecture.lecture.service;
 import com.sparta.spartalecture.global.exception.CustomException;
 import com.sparta.spartalecture.global.exception.CustomExceptionCode;
 import com.sparta.spartalecture.lecture.domain.Lecture;
+import com.sparta.spartalecture.lecture.dto.LectureInfoResponseDto;
 import com.sparta.spartalecture.lecture.dto.LectureRegistrationRequestDto;
 import com.sparta.spartalecture.lecture.dto.LectureRegistrationResponseDto;
 import com.sparta.spartalecture.lecture.repository.LectureRepository;
@@ -27,6 +28,16 @@ public class LectureService {
         lectureRepository.save(newLecture);
 
         return LectureRegistrationResponseDto.from(newLecture);
+    }
+
+    public LectureInfoResponseDto getLecture(Long lectureId) {
+        Lecture lecture = findLecture(lectureId);
+        return LectureInfoResponseDto.from(lecture);
+    }
+
+    private Lecture findLecture(Long lectureId) {
+        return lectureRepository.findById(lectureId)
+                .orElseThrow(() -> new CustomException(CustomExceptionCode.LECTURE_NOT_FOUND));
     }
 
     private Teacher findTeacher (Long teacherId) {
