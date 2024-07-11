@@ -45,6 +45,20 @@ public class CommentService {
         comment.update(requestDto);
     }
 
+    public void deleteComment(Long commentId, UserDetailsImpl userDetails) {
+        // 댓글 존재 여부 판별
+        Comment comment = findComment(commentId);
+
+        // 동일한 작성자인지 판별
+        Long writerId = comment.getUser().getId();
+        Long userId = userDetails.getUser().getId();
+        if (!writerId.equals(userId)) {
+            throw new CustomException(CustomExceptionCode.COMMENT_ACCESS_DENIED);
+        }
+
+        commentRepository.delete(comment);
+    }
+
     private Lecture findLecture(Long lectureId) {
         return lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new CustomException(CustomExceptionCode.LECTURE_NOT_FOUND));
