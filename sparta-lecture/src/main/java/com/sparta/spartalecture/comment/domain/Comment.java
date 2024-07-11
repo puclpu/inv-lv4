@@ -1,6 +1,7 @@
 package com.sparta.spartalecture.comment.domain;
 
 import com.sparta.spartalecture.comment.dto.CommentCreateRequestDto;
+import com.sparta.spartalecture.comment.dto.CommentUpdateRequestDto;
 import com.sparta.spartalecture.lecture.domain.Lecture;
 import com.sparta.spartalecture.lecture.domain.Timestamped;
 import com.sparta.spartalecture.user.domain.User;
@@ -36,5 +37,9 @@ public class Comment extends Timestamped {
                 .lecture(lecture)
                 .content(requestDto.getContent())
                 .build();
+    }
+
+    public void update(CommentUpdateRequestDto requestDto) {
+        this.content = requestDto.getContent();
     }
 }
