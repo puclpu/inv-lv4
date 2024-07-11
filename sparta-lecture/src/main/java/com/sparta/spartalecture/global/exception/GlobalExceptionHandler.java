@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -28,6 +29,17 @@ public class GlobalExceptionHandler {
                     .append("}, ");
         }
         return new ResponseEntity<>(getResponse(errorMessage.toString(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Map<String, String>> handleMissingRequestParamException(MissingServletRequestParameterException e) {
+        String errorMessage = e.getParameterName() + " : 값이 존재하지 않습니다.";
+        return new ResponseEntity<>(getResponse(errorMessage, HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<Map<String, String>> handleCustomException(CustomException e) {
+        return new ResponseEntity<>(getResponse(e.getMessage(), e.getStatus()), e.getStatus());
     }
 
     private Map<String, String> getResponse(String errorMessage, HttpStatus status) {
