@@ -1,5 +1,8 @@
 package com.sparta.spartalecture.lecture.service;
 
+import com.sparta.spartalecture.comment.domain.Comment;
+import com.sparta.spartalecture.comment.dto.CommentInfoResponseDto;
+import com.sparta.spartalecture.comment.repository.CommentRepository;
 import com.sparta.spartalecture.global.exception.CustomException;
 import com.sparta.spartalecture.global.exception.CustomExceptionCode;
 import com.sparta.spartalecture.lecture.domain.Lecture;
@@ -18,12 +21,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class LectureService {
 
     private final LectureRepository lectureRepository;
     private final TeacherRepository teacherRepository;
+    private final CommentRepository commentRepository;
 
     public LectureRegistrationResponseDto registerLecture(LectureRegistrationRequestDto requestDto) {
 
@@ -38,7 +45,14 @@ public class LectureService {
 
     public LectureInfoResponseDto getLecture(Long lectureId) {
         Lecture lecture = findLecture(lectureId);
-        return LectureInfoResponseDto.from(lecture);
+
+        List<Comment> commentList = commentRepository.findAllByLecture(lecture);
+        List<CommentInfoResponseDto> commentInfoResponseDtoList = new ArrayList<>();
+        for (Comment comment : commentList) {
+            commentInfoResponseDtoList.add(CommentInfoResponseDto.from(comment));
+        }
+
+        return LectureInfoResponseDto.of(lecture, commentInfoResponseDtoList);
     }
 
     public Page<LectureInfoByCategoryDto> getLecturesByCategory(Category category, int page, int size, String sortBy, boolean isAsc) {
