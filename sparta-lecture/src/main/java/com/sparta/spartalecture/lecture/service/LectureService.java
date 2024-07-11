@@ -12,6 +12,7 @@ import com.sparta.spartalecture.lecture.dto.LectureRegistrationRequestDto;
 import com.sparta.spartalecture.lecture.dto.LectureRegistrationResponseDto;
 import com.sparta.spartalecture.lecture.repository.LectureRepository;
 import com.sparta.spartalecture.lecture.type.Category;
+import com.sparta.spartalecture.like.repository.LikeLectureRepository;
 import com.sparta.spartalecture.teacher.domain.Teacher;
 import com.sparta.spartalecture.teacher.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class LectureService {
     private final LectureRepository lectureRepository;
     private final TeacherRepository teacherRepository;
     private final CommentRepository commentRepository;
+    private final LikeLectureRepository likeLectureRepository;
 
     public LectureRegistrationResponseDto registerLecture(LectureRegistrationRequestDto requestDto) {
 
@@ -52,7 +54,9 @@ public class LectureService {
             commentInfoResponseDtoList.add(CommentInfoResponseDto.from(comment));
         }
 
-        return LectureInfoResponseDto.of(lecture, commentInfoResponseDtoList);
+        int likeCount = likeLectureRepository.countByLecture(lecture);
+
+        return LectureInfoResponseDto.of(lecture, commentInfoResponseDtoList, likeCount);
     }
 
     public Page<LectureInfoByCategoryDto> getLecturesByCategory(Category category, int page, int size, String sortBy, boolean isAsc) {

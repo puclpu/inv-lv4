@@ -23,8 +23,9 @@ public class LectureInfoResponseDto {
     private LocalDateTime createdAt;
     private TeacherInfoResponseDto teacher;
     private List<CommentInfoResponseDto> commentList;
+    private int likeCount;
 
-    public static LectureInfoResponseDto of(Lecture lecture, List<CommentInfoResponseDto> commentList) {
+    public static LectureInfoResponseDto of(Lecture lecture, List<CommentInfoResponseDto> commentList, int likeCount) {
         return LectureInfoResponseDto.builder()
                 .id(lecture.getId())
                 .title(lecture.getTitle())
@@ -34,6 +35,7 @@ public class LectureInfoResponseDto {
                 .createdAt(lecture.getCreatedAt())
                 .teacher(TeacherInfoResponseDto.from(lecture.getTeacher()))
                 .commentList(commentList)
+                .likeCount(likeCount)
                 .build();
     }
 }
