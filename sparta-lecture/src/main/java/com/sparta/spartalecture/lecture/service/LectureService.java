@@ -48,7 +48,7 @@ public class LectureService {
     public LectureInfoResponseDto getLecture(Long lectureId) {
         Lecture lecture = findLecture(lectureId);
 
-        List<Comment> commentList = commentRepository.findAllByLecture(lecture);
+        List<Comment> commentList = commentRepository.findAllByLectureAndParentCommentIsNull(lecture);
         List<CommentInfoResponseDto> commentInfoResponseDtoList = new ArrayList<>();
         for (Comment comment : commentList) {
             commentInfoResponseDtoList.add(CommentInfoResponseDto.from(comment));
