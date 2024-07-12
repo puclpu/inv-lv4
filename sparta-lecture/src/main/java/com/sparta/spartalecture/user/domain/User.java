@@ -1,10 +1,17 @@
 package com.sparta.spartalecture.user.domain;
 
+import com.sparta.spartalecture.comment.domain.Comment;
+import com.sparta.spartalecture.like.domain.LikeLecture;
 import com.sparta.spartalecture.user.dto.SignupRequestDto;
 import com.sparta.spartalecture.user.type.Gender;
 import com.sparta.spartalecture.user.type.Role;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -25,7 +32,7 @@ public class User {
     private String password;
 
     @Column(name = "gender")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(name = "phone", length = 20)
@@ -35,9 +42,14 @@ public class User {
     private String address;
 
     @Column(name = "role")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<LikeLecture> likeLectures = new HashSet<>();
 
     public static User of(SignupRequestDto requestDto, String password) {
         return User.builder()
