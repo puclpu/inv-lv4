@@ -25,7 +25,7 @@ public class User {
     private String password;
 
     @Column(name = "gender")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(name = "phone", length = 20)
@@ -35,7 +35,7 @@ public class User {
     private String address;
 
     @Column(name = "role")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Role role;
 
 
