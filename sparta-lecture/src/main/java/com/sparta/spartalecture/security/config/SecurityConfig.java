@@ -2,6 +2,8 @@ package com.sparta.spartalecture.security.config;
 
 import com.sparta.spartalecture.security.filter.JwtAuthenticationFilter;
 import com.sparta.spartalecture.security.filter.JwtAuthorizationFilter;
+import com.sparta.spartalecture.security.handler.JwtAccessDeniedHandler;
+import com.sparta.spartalecture.security.handler.JwtAuthenticationEntryPointer;
 import com.sparta.spartalecture.security.jwt.JwtUtil;
 import com.sparta.spartalecture.security.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,6 +29,8 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtAuthenticationEntryPointer jwtAuthenticationEntryPointer;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,7 +56,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf((csrf) -> csrf.disable());
+        http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(
                 (authorizeHttpRequests) -> authorizeHttpRequests
@@ -68,6 +73,11 @@ public class SecurityConfig {
         // 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        http.exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(jwtAuthenticationEntryPointer)
+                                 .accessDeniedHandler(jwtAccessDeniedHandler)
+        );
 
         return http.build();
     }
