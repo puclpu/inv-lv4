@@ -24,8 +24,8 @@ public class CommentService {
         // 강의 존재 여부 판별
         Lecture lecture = findLecture(lectureId);
 
-        // 댓글 save
-        Comment comment = Comment.of(requestDto, lecture,userDetails.getUser());
+        // 댓글 저장
+        Comment comment = Comment.of(requestDto, lecture, userDetails.getUser());
         commentRepository.save(comment);
     }
 
@@ -57,6 +57,18 @@ public class CommentService {
         }
 
         commentRepository.delete(comment);
+    }
+
+    public void createReply(CommentCreateRequestDto requestDto, Long lectureId, Long commentId, UserDetailsImpl userDetails) {
+        // 강의 존재 여부 판별
+        Lecture lecture = findLecture(lectureId);
+
+        // 대댓글 작성인지 판별
+        Comment parentComment = findComment(commentId);
+        Comment comment = Comment.of(requestDto, parentComment, lecture, userDetails.getUser());
+
+        // 대댓글 저장
+        commentRepository.save(comment);
     }
 
     private Lecture findLecture(Long lectureId) {

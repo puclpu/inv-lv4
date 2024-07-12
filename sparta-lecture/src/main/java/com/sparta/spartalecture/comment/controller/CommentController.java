@@ -38,4 +38,13 @@ public class CommentController {
         commentService.deleteComment(commentId, userDetails);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/lectures/{lectureId}/comments/{commentId}")
+    public ResponseEntity<Void> createReply(@RequestBody CommentCreateRequestDto requestDto,
+                                              @PathVariable Long lectureId,
+                                              @PathVariable(required = false) Long commentId,
+                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.createReply(requestDto, lectureId, commentId, userDetails);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }
